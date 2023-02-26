@@ -13,7 +13,6 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class Rectangle extends Object2d{
     List<Integer> index;
-
     int ibo;
     // index buffer object || element buffer object
     public Rectangle(List<ShaderModuleData> shaderModuleDataList, List<Vector3f> vertices, Vector4f color,List<Integer> index) {
