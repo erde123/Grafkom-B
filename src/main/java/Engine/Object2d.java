@@ -130,13 +130,6 @@ public class Object2d extends ShaderProgram {
         // Draw the vertices
         glLineWidth(1);
         glPointSize(0);
-//        GL_TRIANGLES
-//        GL_LINE_LOOP
-//        GL_LINE_STRIP
-//        GL_LINES
-//        GL_POINTS
-//        GL_TRIANGLE_FAN
-//        GL_POINTS
 
 //        glDrawArrays(GL_TRIANGLES,
 //                0,
@@ -144,5 +137,20 @@ public class Object2d extends ShaderProgram {
         glDrawArrays(GL_TRIANGLES,
                 0,
                 vertices.size());
+    }
+
+    public void drawLine() {
+        drawSetup();
+        // Draw the vertices
+        glLineWidth(3);
+        glPointSize(0);
+
+        glDrawArrays(GL_LINE_STRIP, 0,
+                vertices.size());
+    }
+
+    public void addVertice(Vector3f newVector){
+        vertices.add(newVector);
+        setupVAOVBO();
     }
 }
