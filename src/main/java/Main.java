@@ -4,9 +4,11 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL;
 
+import java.lang.runtime.ObjectMethods;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.RandomAccess;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glClearColor;
@@ -16,16 +18,16 @@ public class Main {
 
     private Window window = new Window(640,640,"Hello World");
 
-
     ArrayList<Object2d> objects = new ArrayList<>();
-
     ArrayList<Object2d> objectsRectangle = new ArrayList<>();
-
     ArrayList<Object2d> objectsCircle = new ArrayList<>();
     ArrayList<Object2d> objectsStars = new ArrayList<>();
     ArrayList<Object2d> objectsPointsControl = new ArrayList<>();
+    ArrayList<Object2d> objectsCurve = new ArrayList<>();
+    ArrayList<Mash> objectMash = new ArrayList<>();
 
-    ArrayList<Object2d> objectMash = new ArrayList<>();
+    boolean baru;
+    boolean baru2;
 
     public void init() {
         window.init();
@@ -396,6 +398,20 @@ public class Main {
                 new Vector4f(0.0f,1.0f,1.0f,1.0f)
 
         ));
+                objectsCurve.add(new Object2d(
+                Arrays.asList(
+                        //shaderFile lokasi menyesuaikan objectnya
+                        new ShaderProgram.ShaderModuleData
+                                ("resources/shaders/scene.vert"
+                                        , GL_VERTEX_SHADER),
+                        new ShaderProgram.ShaderModuleData
+                                ("resources/shaders/scene.frag"
+                                        , GL_FRAGMENT_SHADER)
+                ),
+                new ArrayList<>(),
+                new Vector4f(0.0f,1.0f,1.0f,1.0f)
+
+        ));
     }
 
     public void input() {
@@ -408,17 +424,42 @@ public class Main {
             pos.x = (pos.x - (window.getWidth())/2.0f)/(window.getWidth()/2.0f);
             pos.y = (pos.y - (window.getHeight())/2.0f)/(- window.getHeight()/2.0f);
 
-            if((!(pos.x > 1 || pos.x < -0.97 ) && !(pos.y > 0.97 || pos.y < -1))){
+            if((!(pos.x > 1 || pos.x < -0.97 ) && !(pos.y > 0.97 || pos.y < -1))) {
                 System.out.println("x : " + pos.x + " y : " + pos.y);
-                objectsPointsControl.get(0).addVertice(new Vector3f(pos.x, pos.y,0));
-                objectMash.add(new Mash(Arrays.asList(
-                        new ShaderProgram.ShaderModuleData("resources/shaders/scene.vert", GL_VERTEX_SHADER),
-                        new ShaderProgram.ShaderModuleData("resources/shaders/scene.frag", GL_FRAGMENT_SHADER)
-                ),
-                        new ArrayList<>(),
-                        new Vector4f(1.0f, 1.0f, 1.0f, 0.0f),
-                        pos.x, pos.y, 0.08f
-                ));
+                baru = true;
+                int index = 0;
+                for (Mash object : objectMash){
+                    baru = object.check(pos.x, pos.y);
+                    if(!baru){
+                        break;
+                    }
+                }
+                for (Mash object : objectMash){
+                    baru2 = object.kotak(pos.x, pos.y);
+                    if(!baru2){
+                            objectsPointsControl.get(0).update(index, (new Vector3f(pos.x, pos.y, 0)));
+                            object.change(pos.x, pos.y, 0.1f);
+                    }
+                    index++;
+                }
+                System.out.println(index);
+                if (baru){
+                    objectsPointsControl.get(0).addVertice(new Vector3f(pos.x, pos.y, 0));
+                    objectMash.add(new Mash(
+                            Arrays.asList(
+                                    //shaderFile lokasi menyesuaikan objectnya
+                                    new ShaderProgram.ShaderModuleData
+                                            ("resources/shaders/scene.vert"
+                                                    , GL_VERTEX_SHADER),
+                                    new ShaderProgram.ShaderModuleData
+                                            ("resources/shaders/scene.frag"
+                                                    , GL_FRAGMENT_SHADER)
+                            ),
+                            new ArrayList<>(),
+                            new Vector4f(1.0f, 1.0f, 1.0f, 1.0f),
+                            pos.x, pos.y, 0.1f
+                    ));
+                }
             }
         }
     }
@@ -444,10 +485,15 @@ public class Main {
             for (Object2d object : objectsStars) {
                 object.draw();
             }
-            for (Object2d object : objectsPointsControl) {
+
+//            for (Object2d object : objectsPointsControl) {
+//                object.drawLine();
+//            }
+            ArrayList<Object2d> objectsCurve = calculatePoint(objectMash);
+            for (Object2d object : objectsCurve) {
                 object.drawLine();
             }
-            for (Object2d object : objectMash) {
+            for (Mash object : objectMash) {
                 object.draw();
             }
             // restore default
@@ -460,6 +506,45 @@ public class Main {
         }
     }
 
+    public static ArrayList<Object2d> calculatePoint(ArrayList <Mash> list) {
+        int n = list.size() - 1;
+        ArrayList<Object2d> objectsCurve = new ArrayList<>();
+        objectsCurve.add(new Object2d(
+                Arrays.asList(
+                        //shaderFile lokasi menyesuaikan objectnya
+                        new ShaderProgram.ShaderModuleData
+                                ("resources/shaders/scene.vert"
+                                        , GL_VERTEX_SHADER),
+                        new ShaderProgram.ShaderModuleData
+                                ("resources/shaders/scene.frag"
+                                        , GL_FRAGMENT_SHADER)
+                ),
+                new ArrayList<>(),
+                new Vector4f(0.0f,1.0f,1.0f,1.0f)
+
+        ));
+
+        for(float j = 0; j <= 1; j+=0.01f) {
+            float x = 0;
+            float y = 0;
+            for (int i = 0; i <= n; i++) {
+                double factor = combi(n, i) * Math.pow(1 - j, n - i) * Math.pow(j, i);
+                x += factor * list.get(i).getCenterx();
+                y += factor * list.get(i).getCentery();
+            }
+            objectsCurve.get(0).addVertice((new Vector3f(x, y, 0)));
+        }
+        return objectsCurve;
+    }
+    private static int combi(int n, int k) {
+        int result = 1;
+        for (int i = 1; i <= k; i++) {
+            result *= n - i + 1;
+            result /= i;
+        }
+        return result;
+    }
+
     public void run() {
         init();
         loop();
@@ -467,11 +552,7 @@ public class Main {
         glfwSetErrorCallback(null).free();
     }
 
-
     public static void main(String[] args) {
-
         new Main().run();
     }
-
-
 }

@@ -43,4 +43,54 @@ public class Mash extends Object2d {
         glPointSize(0);
         glDrawArrays(GL_POLYGON, 0, vertices.size());
     }
+
+    public boolean check(float x, float y){
+        float jarak = (float) Math.sqrt(Math.pow((x - centerx), 2) + Math.pow((y- centery), 2));
+        if (jarak <= 0.2f){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean kotak(float x, float y){
+        float jarak = (float) Math.sqrt(Math.pow((x - centerx), 2) + Math.pow((y- centery), 2));
+        if (jarak <= 0.1f){
+            return false;
+        }
+        return true;
+    }
+    public void change (float x, float y, float r){
+        this.centerx = x;
+        this.centery = y;
+        this.radius = r;
+        createRect();
+        setupVAOVBO();
+    }
+
+    public void update(int index, Vector3f newVector){
+    }
+
+    public float getCenterx() {
+        return centerx;
+    }
+
+    public void setCenterx(float centerx) {
+        this.centerx = centerx;
+    }
+
+    public float getCentery() {
+        return centery;
+    }
+
+    public void setCentery(float centery) {
+        this.centery = centery;
+    }
+
+    public float getRadius() {
+        return radius;
+    }
+
+    public void setRadius(float radius) {
+        this.radius = radius;
+    }
 }

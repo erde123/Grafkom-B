@@ -153,4 +153,9 @@ public class Object2d extends ShaderProgram {
         vertices.add(newVector);
         setupVAOVBO();
     }
+
+    public void update(int index, Vector3f newVector){
+        vertices.set(index, newVector);
+        setupVAOVBO();
+    }
 }
