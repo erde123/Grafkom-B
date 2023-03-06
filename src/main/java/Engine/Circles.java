@@ -17,21 +17,13 @@ public class Circles extends Object2d {
     float centery;
     float radiusX;
     float radiusY;
-    int coba;
-
-    public Circles(List<ShaderModuleData> shaderModuleDataList, List<Vector3f> vertices, Vector4f color, float centerx, float centery, float radiusX, float radiusY, int coba) {
+    public Circles(List<ShaderModuleData> shaderModuleDataList, List<Vector3f> vertices, Vector4f color, float centerx, float centery, float radiusX, float radiusY) {
         super(shaderModuleDataList, vertices, color);
         this.centerx = centerx;
         this.centery = centery;
         this.radiusX = radiusX;
         this.radiusY = radiusY;
-        if (coba == 0){
-            createCircle();
-        } else if (coba == 1) {
-            createdRectangle();
-        } else if (coba == 2) {
-            createdTriangle();
-        }
+        createCircle();
         setupVAOVBO();
     }
 

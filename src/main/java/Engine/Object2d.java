@@ -121,7 +121,7 @@ public class Object2d extends ShaderProgram {
 //        GL_TRIANGLE_FAN
 //        GL_POINTS
 
-        glDrawArrays(GL_TRIANGLES,
+        glDrawArrays(GL_LINE_STRIP,
                 0,
                 vertices.size());
     }

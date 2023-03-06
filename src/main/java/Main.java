@@ -24,6 +24,7 @@ public class Main {
     ArrayList<Object2d> objectsStars = new ArrayList<>();
     ArrayList<Object2d> objectsPointsControl = new ArrayList<>();
     ArrayList<Object2d> objectsCurve = new ArrayList<>();
+    ArrayList<Object2d> objectsSphere = new ArrayList<>();
     ArrayList<Mash> objectMash = new ArrayList<>();
 
     boolean baru;
@@ -384,7 +385,35 @@ public class Main {
 //                Arrays.asList(4, 1, 1, 3, 3, 0, 0, 2, 2, 4),
 //                0.68f, 0.75f, 0.05f
 //        ));
-                objectsPointsControl.add(new Object2d(
+//                objectsPointsControl.add(new Object2d(
+//                Arrays.asList(
+//                        //shaderFile lokasi menyesuaikan objectnya
+//                        new ShaderProgram.ShaderModuleData
+//                                ("resources/shaders/scene.vert"
+//                                        , GL_VERTEX_SHADER),
+//                        new ShaderProgram.ShaderModuleData
+//                                ("resources/shaders/scene.frag"
+//                                        , GL_FRAGMENT_SHADER)
+//                ),
+//                new ArrayList<>(),
+//                new Vector4f(1.0f,1.0f,1.0f,1.0f)
+//
+//        ));
+//                objectsCurve.add(new Object2d(
+//                Arrays.asList(
+//                        //shaderFile lokasi menyesuaikan objectnya
+//                        new ShaderProgram.ShaderModuleData
+//                                ("resources/shaders/scene.vert"
+//                                        , GL_VERTEX_SHADER),
+//                        new ShaderProgram.ShaderModuleData
+//                                ("resources/shaders/scene.frag"
+//                                        , GL_FRAGMENT_SHADER)
+//                ),
+//                new ArrayList<>(),
+//                new Vector4f(0.0f,1.0f,1.0f,1.0f)
+//
+//        ));
+                objectsSphere.add(new Sphere(
                 Arrays.asList(
                         //shaderFile lokasi menyesuaikan objectnya
                         new ShaderProgram.ShaderModuleData
@@ -394,24 +423,14 @@ public class Main {
                                 ("resources/shaders/scene.frag"
                                         , GL_FRAGMENT_SHADER)
                 ),
-                new ArrayList<>(),
-                new Vector4f(0.0f,1.0f,1.0f,1.0f)
-
-        ));
-                objectsCurve.add(new Object2d(
-                Arrays.asList(
-                        //shaderFile lokasi menyesuaikan objectnya
-                        new ShaderProgram.ShaderModuleData
-                                ("resources/shaders/scene.vert"
-                                        , GL_VERTEX_SHADER),
-                        new ShaderProgram.ShaderModuleData
-                                ("resources/shaders/scene.frag"
-                                        , GL_FRAGMENT_SHADER)
+                new ArrayList<>(
+                        List.of(
+                                new Vector3f(-0.7f, 0.73f, 0.0f)
+                        )
                 ),
-                new ArrayList<>(),
-                new Vector4f(0.0f,1.0f,1.0f,1.0f)
-
-        ));
+                new Vector4f(0.0f, 1.0f, 1.0f, 1.0f),
+                0.01f, 0.01f, 0.01f,0.05f,0.05f, 0.05f
+                ));
     }
 
     public void input() {
@@ -486,14 +505,17 @@ public class Main {
                 object.draw();
             }
 
-//            for (Object2d object : objectsPointsControl) {
-//                object.drawLine();
-//            }
+            for (Object2d object : objectsPointsControl) {
+                object.drawLine();
+            }
             ArrayList<Object2d> objectsCurve = calculatePoint(objectMash);
             for (Object2d object : objectsCurve) {
                 object.drawLine();
             }
             for (Mash object : objectMash) {
+                object.draw();
+            }
+            for (Object2d object : objectsSphere) {
                 object.draw();
             }
             // restore default
