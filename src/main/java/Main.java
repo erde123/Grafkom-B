@@ -16,7 +16,7 @@ import static org.lwjgl.opengl.GL30.*;
 
 public class Main {
 
-    private Window window = new Window(640,640,"Hello World");
+    private Window window = new Window(640, 640, "Hello World");
 
     ArrayList<Object2d> objects = new ArrayList<>();
     ArrayList<Object2d> objectsRectangle = new ArrayList<>();
@@ -24,11 +24,14 @@ public class Main {
     ArrayList<Object2d> objectsStars = new ArrayList<>();
     ArrayList<Object2d> objectsPointsControl = new ArrayList<>();
     ArrayList<Object2d> objectsCurve = new ArrayList<>();
-    ArrayList<Object2d> objectsSphere = new ArrayList<>();
+    ArrayList<Sphere> objectsSphere = new ArrayList<>();
     ArrayList<Mash> objectMash = new ArrayList<>();
 
     boolean baru;
     boolean baru2;
+
+    float xNow;
+    float yNow;
 
     public void init() {
         window.init();
@@ -413,7 +416,26 @@ public class Main {
 //                new Vector4f(0.0f,1.0f,1.0f,1.0f)
 //
 //        ));
-                objectsSphere.add(new Sphere(
+        objectsSphere.add(new Sphere(
+                Arrays.asList(
+                        //shaderFile lokasi menyesuaikan objectnya
+                        new ShaderProgram.ShaderModuleData
+                                ("resources/shaders/scene.vert"
+                                        , GL_VERTEX_SHADER),
+                        new ShaderProgram.ShaderModuleData
+                                ("resources/shaders/scene.frag"
+                                        , GL_FRAGMENT_SHADER)
+                ),
+                new ArrayList<>(
+                        List.of(
+                                new Vector3f(-0.7f, 0.73f, 0.0f)
+                        )
+                ),
+                new Vector4f(1.0f, 0.0f, 0.0f, 1.0f),
+                0.0f, 0.0f, 0.0f, 0.5f, 0.5f, 0.5f
+        ));
+        objectsSphere.get(0).scaleObject(0.25f, 0.25f, 0.25f);
+        objectsSphere.add(new Sphere(
                 Arrays.asList(
                         //shaderFile lokasi menyesuaikan objectnya
                         new ShaderProgram.ShaderModuleData
@@ -429,40 +451,167 @@ public class Main {
                         )
                 ),
                 new Vector4f(0.0f, 1.0f, 1.0f, 1.0f),
-                0.01f, 0.01f, 0.01f,0.05f,0.05f, 0.05f
-                ));
+                0.0f, 0.0f, 0.0f, 0.5f, 0.5f, 0.5f
+        ));
+        objectsSphere.add(new Sphere(
+                Arrays.asList(
+                        //shaderFile lokasi menyesuaikan objectnya
+                        new ShaderProgram.ShaderModuleData
+                                ("resources/shaders/scene.vert"
+                                        , GL_VERTEX_SHADER),
+                        new ShaderProgram.ShaderModuleData
+                                ("resources/shaders/scene.frag"
+                                        , GL_FRAGMENT_SHADER)
+                ),
+                new ArrayList<>(
+                        List.of(
+                                new Vector3f(-0.7f, 0.73f, 0.0f)
+                        )
+                ),
+                new Vector4f(0.0f, 1.0f, 1.0f, 1.0f),
+                0.0f, 0.0f, 0.0f, 0.5f, 0.5f, 0.5f
+        ));
+        objectsSphere.add(new Sphere(
+                Arrays.asList(
+                        //shaderFile lokasi menyesuaikan objectnya
+                        new ShaderProgram.ShaderModuleData
+                                ("resources/shaders/scene.vert"
+                                        , GL_VERTEX_SHADER),
+                        new ShaderProgram.ShaderModuleData
+                                ("resources/shaders/scene.frag"
+                                        , GL_FRAGMENT_SHADER)
+                ),
+                new ArrayList<>(
+                        List.of(
+                                new Vector3f(-0.7f, 0.73f, 0.0f)
+                        )
+                ),
+                new Vector4f(0.0f, 1.0f, 1.0f, 1.0f),
+                0.0f, 0.0f, 0.0f, 0.5f, 0.5f, 0.5f
+        ));
+        objectsSphere.add(new Sphere(
+                Arrays.asList(
+                        //shaderFile lokasi menyesuaikan objectnya
+                        new ShaderProgram.ShaderModuleData
+                                ("resources/shaders/scene.vert"
+                                        , GL_VERTEX_SHADER),
+                        new ShaderProgram.ShaderModuleData
+                                ("resources/shaders/scene.frag"
+                                        , GL_FRAGMENT_SHADER)
+                ),
+                new ArrayList<>(
+                        List.of(
+                                new Vector3f(-0.7f, 0.73f, 0.0f)
+                        )
+                ),
+                new Vector4f(0.0f, 1.0f, 1.0f, 1.0f),
+                0.0f, 0.0f, 0.0f, 0.5f, 0.5f, 0.5f
+        ));
+        objectsSphere.add(new Sphere(
+                Arrays.asList(
+                        //shaderFile lokasi menyesuaikan objectnya
+                        new ShaderProgram.ShaderModuleData
+                                ("resources/shaders/scene.vert"
+                                        , GL_VERTEX_SHADER),
+                        new ShaderProgram.ShaderModuleData
+                                ("resources/shaders/scene.frag"
+                                        , GL_FRAGMENT_SHADER)
+                ),
+                new ArrayList<>(
+                        List.of(
+                                new Vector3f(-0.7f, 0.73f, 0.0f)
+                        )
+                ),
+                new Vector4f(0.0f, 1.0f, 1.0f, 1.0f),
+                0.0f, 0.0f, 0.0f, 0.5f, 0.5f, 0.5f
+        ));
+        objectsSphere.get(1).scaleObject(0.1f, 0.1f, 0.1f);
+        objectsSphere.get(2).scaleObject(0.1f, 0.1f, 0.1f);
+        objectsSphere.get(3).scaleObject(0.1f, 0.1f, 0.1f);
+        objectsSphere.get(4).scaleObject(0.1f, 0.1f, 0.1f);
+        objectsSphere.get(5).scaleObject(0.05f, 0.05f, 0.05f);
+
+        objectsSphere.get(1).translateObject(0.23f, 0.0f, 0.0f);
+        objectsSphere.get(2).translateObject(0.38f, 0.0f, 0.0f);
+        objectsSphere.get(3).translateObject(0.48f, 0.0f, 0.0f);
+        objectsSphere.get(4).translateObject(0.7f, 0.0f, 0.0f);
+        objectsSphere.get(5).translateObject(0.78f, 0.0f, 0.0f);
+
+        objectsSphere.get(1).setCenterx(0.23f);
+        objectsSphere.get(2).setCenterx(0.38f);
+        objectsSphere.get(3).setCenterx(0.48f);
+        objectsSphere.get(4).setCenterx(0.7f);
+        objectsSphere.get(5).setCenterx(0.78f);
     }
 
     public void input() {
-        if (window.isKeyPressed(GLFW_KEY_W)) {
-            System.out.println("W");
+        if (window.isKeyPressed(GLFW_KEY_F)) {
+            for (int i = 1; i <= 5; i++){
+                objectsSphere.get(i).rotateObject((float) Math.toRadians(0.5f), 0.0f,0.0f,1f);
+                xNow = (float) (objectsSphere.get(i).getCenterx() * Math.cos(Math.toRadians(0.5)) - objectsSphere.get(i).getCentery() * Math.sin(Math.toRadians(0.5)));
+                objectsSphere.get(i).setCenterx((float) (objectsSphere.get(i).getCenterx() * Math.cos(Math.toRadians(0.5)) - objectsSphere.get(i).getCentery() * Math.sin(Math.toRadians(0.5))));
+                yNow = (float) (objectsSphere.get(i).getCenterx() * Math.sin(Math.toRadians(0.5)) + objectsSphere.get(i).getCentery() * Math.cos(Math.toRadians(0.5)));
+                objectsSphere.get(i).setCentery((float) (objectsSphere.get(i).getCenterx() * Math.sin(Math.toRadians(0.5)) + objectsSphere.get(i).getCentery() * Math.cos(Math.toRadians(0.5))));
+            }
         }
-        if (window.getMouseInput().isLeftButtonPressed()){
+        if (window.isKeyPressed(GLFW_KEY_G)) {
+            for (int x = 1; x <= 4; x++) {
+                objectsSphere.get(x).translateObject(
+                        -objectsSphere.get(x).getCenterx(),
+                        -objectsSphere.get(x).getCentery(),
+                        -objectsSphere.get(x).centerZ
+                );
+                objectsSphere.get(x).rotateObject((float) Math.toRadians(0.5f), 0f, 1f, 0.0f);
+
+//                    speheres.get(x).xr = speheres.get(x).radiusX * (float)(Math.cos(Math.toRadians(speheres.get(x).currAngle)));
+//                    speheres.get(x).yr = speheres.get(x).radiusY * (float)(Math.sin(Math.toRadians(speheres.get(x).currAngle)));
+//                    if (speheres.get(x).currAngle + 1 < 360)
+//                        speheres.get(x).currAngle++;
+//                    else
+//                        speheres.get(x).currAngle = 0;
+                objectsSphere.get(x).translateObject(
+                        objectsSphere.get(x).getCenterx(),
+                        objectsSphere.get(x).getCentery(),
+                        objectsSphere.get(x).centerZ
+                );
+            }
+        }
+
+        if (window.isKeyPressed(GLFW_KEY_H)) {
+            float x = objectsSphere.get(4).getCenterx();
+            float y = objectsSphere.get(4).getCentery();
+            float z = objectsSphere.get(4).centerZ;
+
+            objectsSphere.get(5).translateObject(-x, -y, -z);
+            objectsSphere.get(5).rotateObject((float) Math.toRadians(0.5f), 0.0f, 0.0f, 1.0f);
+            objectsSphere.get(5).translateObject(x, y, z);
+        }
+        if (window.getMouseInput().isLeftButtonPressed()) {
             Vector2f pos = window.getMouseInput().getCurrentPos();
 //            System.out.println("x :" + pos.x + " y: " + pos.y);
-            pos.x = (pos.x - (window.getWidth())/2.0f)/(window.getWidth()/2.0f);
-            pos.y = (pos.y - (window.getHeight())/2.0f)/(- window.getHeight()/2.0f);
+            pos.x = (pos.x - (window.getWidth()) / 2.0f) / (window.getWidth() / 2.0f);
+            pos.y = (pos.y - (window.getHeight()) / 2.0f) / (-window.getHeight() / 2.0f);
 
-            if((!(pos.x > 1 || pos.x < -0.97 ) && !(pos.y > 0.97 || pos.y < -1))) {
+            if ((!(pos.x > 1 || pos.x < -0.97) && !(pos.y > 0.97 || pos.y < -1))) {
                 System.out.println("x : " + pos.x + " y : " + pos.y);
                 baru = true;
                 int index = 0;
-                for (Mash object : objectMash){
+                for (Mash object : objectMash) {
                     baru = object.check(pos.x, pos.y);
-                    if(!baru){
+                    if (!baru) {
                         break;
                     }
                 }
-                for (Mash object : objectMash){
+                for (Mash object : objectMash) {
                     baru2 = object.kotak(pos.x, pos.y);
-                    if(!baru2){
-                            objectsPointsControl.get(0).update(index, (new Vector3f(pos.x, pos.y, 0)));
-                            object.change(pos.x, pos.y, 0.1f);
+                    if (!baru2) {
+                        objectsPointsControl.get(0).update(index, (new Vector3f(pos.x, pos.y, 0)));
+                        object.change(pos.x, pos.y, 0.1f);
                     }
                     index++;
                 }
                 System.out.println(index);
-                if (baru){
+                if (baru) {
                     objectsPointsControl.get(0).addVertice(new Vector3f(pos.x, pos.y, 0));
                     objectMash.add(new Mash(
                             Arrays.asList(
@@ -528,7 +677,7 @@ public class Main {
         }
     }
 
-    public static ArrayList<Object2d> calculatePoint(ArrayList <Mash> list) {
+    public static ArrayList<Object2d> calculatePoint(ArrayList<Mash> list) {
         int n = list.size() - 1;
         ArrayList<Object2d> objectsCurve = new ArrayList<>();
         objectsCurve.add(new Object2d(
@@ -542,11 +691,11 @@ public class Main {
                                         , GL_FRAGMENT_SHADER)
                 ),
                 new ArrayList<>(),
-                new Vector4f(0.0f,1.0f,1.0f,1.0f)
+                new Vector4f(0.0f, 1.0f, 1.0f, 1.0f)
 
         ));
 
-        for(float j = 0; j <= 1; j+=0.01f) {
+        for (float j = 0; j <= 1; j += 0.01f) {
             float x = 0;
             float y = 0;
             for (int i = 0; i <= n; i++) {
@@ -558,6 +707,7 @@ public class Main {
         }
         return objectsCurve;
     }
+
     private static int combi(int n, int k) {
         int result = 1;
         for (int i = 1; i <= k; i++) {

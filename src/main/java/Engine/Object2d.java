@@ -1,5 +1,6 @@
 package Engine;
 
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
@@ -21,6 +22,7 @@ public class Object2d extends ShaderProgram {
     UniformsMap uniformsMap;
     List<Vector3f> verticesColor;
     int vboColor;
+    Matrix4f model;
 
     public Object2d(List<ShaderModuleData> shaderModuleDataList
             , List<Vector3f> vertices, Vector4f color) {
@@ -30,6 +32,8 @@ public class Object2d extends ShaderProgram {
         this.color = color;
         uniformsMap = new UniformsMap(getProgramId());
         uniformsMap.createUniform("uni_color");
+        uniformsMap.createUniform("model");
+        model = new Matrix4f();
     }
     public Object2d(List<ShaderModuleData> shaderModuleDataList
             , List<Vector3f> vertices, List<Vector3f> verticesColor) {
@@ -79,7 +83,7 @@ public class Object2d extends ShaderProgram {
     public void drawSetup() {
         bind();
         uniformsMap.setUniform("uni_color", color);
-
+        uniformsMap.setUniform("model", model);
 
         // Bind VBO
         glEnableVertexAttribArray(0);
@@ -157,5 +161,14 @@ public class Object2d extends ShaderProgram {
     public void update(int index, Vector3f newVector){
         vertices.set(index, newVector);
         setupVAOVBO();
+    }
+    public void translateObject(Float offsetX, Float offsetY, Float offsetZ){
+        model = new Matrix4f().translate(offsetX, offsetY, offsetZ).mul(new Matrix4f(model));
+    }
+    public void rotateObject(Float degree, Float offsetX, Float offsetY, Float offsetZ){
+        model = new Matrix4f().rotate(degree, offsetX, offsetY, offsetZ).mul(new Matrix4f(model));
+    }
+    public void scaleObject(Float offsetX, Float offsetY, Float offsetZ){
+        model = new Matrix4f().scale(offsetX, offsetY, offsetZ).mul(new Matrix4f(model));
     }
 }

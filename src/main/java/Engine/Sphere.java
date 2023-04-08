@@ -11,7 +11,7 @@ import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 
 public class Sphere extends Circles {
-    float centerZ;
+    public float centerZ;
     float radiusZ;
     List<Integer> index;
     int ibo;
@@ -20,13 +20,13 @@ public class Sphere extends Circles {
         super(shaderModuleDataList, vertices, color, centerX, centerY, radiusX, radiusY);
         this.centerZ = centerZ;
         this.radiusZ = radiusZ;
-//        createSphere();
+        createSphere();
 //        Hyperboloid1();
 //        Hyperboloid2();
 //        Ellipsoid();
 //        EllipticCone();
 //        EllipticPara();
-        HyperPara();
+//        HyperPara();
         setupVAOVBO();
     }
 
@@ -238,8 +238,8 @@ public class Sphere extends Circles {
         }
         for(double v = -Math.PI/2; v<= Math.PI/2; v+=Math.PI/36){
             for(double u = Math.PI/2; u<= 3 * Math.PI/2; u+=Math.PI/36){
-                float x = -0.1f * (float)(Math.tan(v) * Math.cos(u));
-                float z = -0.1f * (float)(Math.tan(v) * Math.sin(u));
+                float x = 0.1f * (float)(Math.tan(v) * Math.cos(u));
+                float z = 0.1f * (float)(Math.tan(v) * Math.sin(u));
                 float y = -0.1f * (float)(1/(Math.cos(v)));
                 temp.add(new Vector3f(x,y,z));
             }

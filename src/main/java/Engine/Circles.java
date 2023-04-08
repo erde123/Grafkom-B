@@ -13,10 +13,43 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class Circles extends Object2d {
-    float centerx;
-    float centery;
-    float radiusX;
-    float radiusY;
+    public float centerx;
+    public float centery;
+    public float radiusX;
+    public float radiusY;
+
+    public float getCenterx() {
+        return centerx;
+    }
+
+    public float getCentery() {
+        return centery;
+    }
+
+    public float getRadiusX() {
+        return radiusX;
+    }
+
+    public float getRadiusY() {
+        return radiusY;
+    }
+
+    public void setCenterx(float centerx) {
+        this.centerx = centerx;
+    }
+
+    public void setCentery(float centery) {
+        this.centery = centery;
+    }
+
+    public void setRadiusX(float radiusX) {
+        this.radiusX = radiusX;
+    }
+
+    public void setRadiusY(float radiusY) {
+        this.radiusY = radiusY;
+    }
+
     public Circles(List<ShaderModuleData> shaderModuleDataList, List<Vector3f> vertices, Vector4f color, float centerx, float centery, float radiusX, float radiusY) {
         super(shaderModuleDataList, vertices, color);
         this.centerx = centerx;
