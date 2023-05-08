@@ -4,29 +4,37 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;
-import java.util.EventListener;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 
-public class Sphere extends Circles {
-    public float centerZ;
+public class Sphere extends Circle {
+    float centerZ;
     float radiusZ;
     List<Integer> index;
     int ibo;
+
+    public Sphere(List<ShaderModuleData> shaderModuleDataList, List<Vector3f> vertices, Vector4f color, float centerX, float centerY, float centerZ, float radiusX, float radiusY, float radiusZ, int mode) {
+        super(shaderModuleDataList, vertices, color, centerX, centerY, radiusX, radiusY, mode);
+        this.centerZ = centerZ;
+        this.radiusZ = radiusZ;
+        createBox();
+        setupVAOVBO();
+    }
 
     public Sphere(List<ShaderModuleData> shaderModuleDataList, List<Vector3f> vertices, Vector4f color, float centerX, float centerY, float centerZ, float radiusX, float radiusY, float radiusZ) {
         super(shaderModuleDataList, vertices, color, centerX, centerY, radiusX, radiusY);
         this.centerZ = centerZ;
         this.radiusZ = radiusZ;
-        createSphere();
-//        Hyperboloid1();
-//        Hyperboloid2();
-//        Ellipsoid();
-//        EllipticCone();
-//        EllipticPara();
-//        HyperPara();
+//        createSphere();
+        createBox();
+//        createEllipsoid();
+//        createHyperboloid_1_Side();
+//        createHyperboloid_2_Side();
+//        createEllipticCone();
+//        createEllipticParaboloid();
+//        createHyperboloidParaboloid();
         setupVAOVBO();
     }
 
@@ -36,57 +44,57 @@ public class Sphere extends Circles {
         ArrayList<Vector3f> tempVertices = new ArrayList<>();
 
         // Titik 1 kiri atas belakang
-        temp.x = centerx - radiusX / 2;
-        temp.y = centery + radiusY / 2;
+        temp.x = centerX - radiusX / 2;
+        temp.y = centerY + radiusY / 2;
         temp.z = centerZ - radiusZ / 2;
         tempVertices.add(temp);
         temp = new Vector3f();
 
         // Titik 2 kiri bawah belakang
-        temp.x = centerx - radiusX / 2;
-        temp.y = centery - radiusY / 2;
+        temp.x = centerX - radiusX / 2;
+        temp.y = centerY - radiusY / 2;
         temp.z = centerZ - radiusZ / 2;
         tempVertices.add(temp);
         temp = new Vector3f();
 
         // Titik 3 kanan bawah belakang
-        temp.x = centerx + radiusX / 2;
-        temp.y = centery - radiusY / 2;
+        temp.x = centerX + radiusX / 2;
+        temp.y = centerY - radiusY / 2;
         temp.z = centerZ - radiusZ / 2;
         tempVertices.add(temp);
         temp = new Vector3f();
 
         // Titik 4 kanan atas belakang
-        temp.x = centerx + radiusX / 2;
-        temp.y = centery + radiusY / 2;
+        temp.x = centerX + radiusX / 2;
+        temp.y = centerY + radiusY / 2;
         temp.z = centerZ - radiusZ / 2;
         tempVertices.add(temp);
         temp = new Vector3f();
 
         // Titik 5 kiri atas depan
-        temp.x = centerx - radiusX / 2;
-        temp.y = centery + radiusY / 2;
+        temp.x = centerX - radiusX / 2;
+        temp.y = centerY + radiusY / 2;
         temp.z = centerZ + radiusZ / 2;
         tempVertices.add(temp);
         temp = new Vector3f();
 
         // Titik 6 kiri bawah depan
-        temp.x = centerx - radiusX / 2;
-        temp.y = centery - radiusY / 2;
+        temp.x = centerX - radiusX / 2;
+        temp.y = centerY - radiusY / 2;
         temp.z = centerZ + radiusZ / 2;
         tempVertices.add(temp);
         temp = new Vector3f();
 
         // Titik 7 kanan bawah depan
-        temp.x = centerx + radiusX / 2;
-        temp.y = centery - radiusY / 2;
+        temp.x = centerX + radiusX / 2;
+        temp.y = centerY - radiusY / 2;
         temp.z = centerZ + radiusZ / 2;
         tempVertices.add(temp);
         temp = new Vector3f();
 
         // Titik 8 kanan atas depan
-        temp.x = centerx + radiusX / 2;
-        temp.y = centery + radiusY / 2;
+        temp.x = centerX + radiusX / 2;
+        temp.y = centerY + radiusY / 2;
         temp.z = centerZ + radiusZ / 2;
         tempVertices.add(temp);
         temp = new Vector3f();
@@ -166,6 +174,7 @@ public class Sphere extends Circles {
                 temp.add(new Vector3f(x, y, z));
             }
         }
+
         vertices = temp;
 
         int k1, k2;
@@ -194,112 +203,103 @@ public class Sphere extends Circles {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, Utils.listoInt(index), GL_STATIC_DRAW);
     }
 
-    public void Ellipsoid(){
+    public void createEllipsoid() {
         vertices.clear();
         ArrayList<Vector3f> temp = new ArrayList<>();
 
-        for(double v = -Math.PI/2; v<= Math.PI/2; v+=Math.PI/36){
-            for(double u = -Math.PI; u<= Math.PI; u+=Math.PI/36){
-                float x = 0.2f * (float)(Math.cos(v) * Math.cos(u));
-                float y = 0.5f * (float)(Math.cos(v) * Math.sin(u));
-                float z = 0.5f * (float)(Math.sin(v));
-                temp.add(new Vector3f(x,y,z));
+        for (double v = -Math.PI / 2; v <= Math.PI / 2; v += Math.PI / 16) {
+            for (double u = -Math.PI; u <= Math.PI; u += Math.PI / 16) {
+                float x = 0.5f * (float) (Math.cos(v) * Math.cos(u));
+                float y = 0.3f * (float) (Math.cos(v) * Math.sin(u));
+                float z = 0.5f * (float) (Math.sin(v));
+                temp.add(new Vector3f(x, y, z));
+            }
+        }
+        vertices = temp;
+    }
+    public void createHyperboloid_1_Side() {
+        vertices.clear();
+        ArrayList<Vector3f> temp = new ArrayList<>();
+
+        for (double v = -Math.PI / 2; v <= Math.PI / 2; v += Math.PI / 16) {
+            for (double u = -Math.PI; u <= Math.PI; u += Math.PI / 16) {
+                float x = 0.1f * (float) (1/Math.cos(v)) *  (float) Math.cos(u);
+                float z = 0.1f * (float) (1/Math.cos(v)) * (float) Math.sin(u);
+                float y = 0.1f * (float) (Math.tan(v));
+                temp.add(new Vector3f(x, y, z));
             }
         }
         vertices = temp;
     }
 
-    public void Hyperboloid1 (){
+    public void createHyperboloid_2_Side() {
         vertices.clear();
         ArrayList<Vector3f> temp = new ArrayList<>();
 
-        for(double v = -Math.PI/2; v<= Math.PI/2; v+=Math.PI/36){
-            for(double u = -Math.PI; u<= Math.PI; u+=Math.PI/36){
-                float x = 0.1f * (float)((1.0f/Math.cos(v)) * Math.cos(u));
-                float z = 0.1f * (float)((1.0f/Math.cos(v)) * Math.sin(u));
-                float y = 0.1f * (float)(Math.tan(v));
-                temp.add(new Vector3f(x,y,z));
+        for (double v = -Math.PI / 2; v <= Math.PI / 2; v += Math.PI / 16) {
+            for (double u = -Math.PI/2; u <= Math.PI/2; u += Math.PI / 16) {
+                float x = 0.1f * (float) (Math.tan(v)) *  (float) Math.cos(u);
+                float z = 0.1f * (float) (Math.tan(v)) * (float) Math.sin(u);
+                float y = 0.1f * (float) (1/Math.cos(v));
+                temp.add(new Vector3f(x, y, z));
+            }
+        }
+
+        for (double v = -Math.PI / 2; v <= Math.PI / 2; v += Math.PI / 36) {
+            for (double u = Math.PI/2; u <= 3*Math.PI/2; u += Math.PI / 26) {
+                float x = 0.1f * (float) (Math.tan(v)) *  (float) Math.cos(u);
+                float z = 0.1f * (float) (Math.tan(v)) * (float) Math.sin(u);
+                float y = -0.1f * (float) (1/Math.cos(v));
+                temp.add(new Vector3f(x, y, z));
+            }
+        }
+
+        vertices = temp;
+    }
+
+    public void createEllipticCone() {
+        vertices.clear();
+        ArrayList<Vector3f> temp = new ArrayList<>();
+
+        for (double v = -Math.PI / 2; v <= Math.PI / 2; v += Math.PI / 16) {
+            for (double u = -Math.PI; u <= Math.PI; u += Math.PI / 16) {
+                float x = 0.1f * (float) v *  (float) Math.cos(u);
+                float z = 0.1f * (float) v * (float) Math.sin(u);
+                float y = 0.1f * (float) v;
+                temp.add(new Vector3f(x, y, z));
             }
         }
         vertices = temp;
     }
 
-    public void Hyperboloid2 (){
+    public void createEllipticParaboloid() {
         vertices.clear();
         ArrayList<Vector3f> temp = new ArrayList<>();
 
-        for(double v = -Math.PI/2; v<= Math.PI/2; v+=Math.PI/36){
-            for(double u = -Math.PI; u<= Math.PI; u+=Math.PI/36){
-                float x = 0.1f * (float)(Math.tan(v) * Math.cos(u));
-                float z = 0.1f * (float)(Math.tan(v) * Math.sin(u));
-                float y = 0.1f * (float)(1/(Math.cos(v)));
-                temp.add(new Vector3f(x,y,z));
-            }
-        }
-        for(double v = -Math.PI/2; v<= Math.PI/2; v+=Math.PI/36){
-            for(double u = Math.PI/2; u<= 3 * Math.PI/2; u+=Math.PI/36){
-                float x = 0.1f * (float)(Math.tan(v) * Math.cos(u));
-                float z = 0.1f * (float)(Math.tan(v) * Math.sin(u));
-                float y = -0.1f * (float)(1/(Math.cos(v)));
-                temp.add(new Vector3f(x,y,z));
+        for (double v = 0; v <= 3; v += Math.PI / 16) {
+            for (double u = -Math.PI; u <= Math.PI; u += Math.PI / 16) {
+                float x = 0.5f * (float) v *  (float) Math.cos(u);
+                float z = 0.5f * (float) v * (float) Math.sin(u);
+                float y = (float) Math.pow(v, 2);
+                temp.add(new Vector3f(x, y, z));
             }
         }
         vertices = temp;
     }
 
-    public void EllipticCone(){
+    public void createHyperboloidParaboloid() {
         vertices.clear();
         ArrayList<Vector3f> temp = new ArrayList<>();
 
-        for(double v = -Math.PI/2; v<= Math.PI/2; v+=Math.PI/36){
-            for(double u = -Math.PI; u<= Math.PI; u+=Math.PI/36){
-                float x = 0.5f * (float)(v * Math.cos(u));
-                float z = 0.5f * (float)(v * Math.sin(u));
-                float y = 0.5f * (float)((v));
-                temp.add(new Vector3f(x,y,z));
+        for (double v = 0; v <= 3; v += Math.PI / 16) {
+            for (double u = -Math.PI; u <= Math.PI; u += Math.PI / 16) {
+                float x = 0.1f * (float) v *  (float) Math.tan(u);
+                float z = 0.1f * (float) v * (float) (1/Math.cos(u));
+                float y = (float) Math.pow(v, 2);
+                temp.add(new Vector3f(x, y, z));
             }
         }
         vertices = temp;
-    }
-
-    public void EllipticPara(){
-        vertices.clear();
-        ArrayList<Vector3f> temp = new ArrayList<>();
-
-        for(double v = 0.0; v<= 3.0; v+=Math.PI/36){
-            for(double u = -Math.PI; u<= Math.PI; u+=Math.PI/36){
-                float x = 0.5f * (float)(v * Math.cos(u));
-                float z = 0.5f * (float)(v * Math.sin(u));
-                float y = (float)((v) * (v));
-                temp.add(new Vector3f(x,y,z));
-            }
-        }
-        vertices = temp;
-    }
-
-    public void HyperPara(){
-        vertices.clear();
-        ArrayList<Vector3f> temp = new ArrayList<>();
-
-        for(double v = 0.0; v<= 3.0; v+=Math.PI/36){
-            for(double u = -Math.PI; u<= Math.PI; u+=Math.PI/36){
-                float x = (float)(0.1f * v * Math.tan(u));
-                float z = 0.1f * (float)(v * (1/(Math.cos(u))));
-                float y = (float)((v) * (v));
-                temp.add(new Vector3f(x,y,z));
-            }
-        }
-        vertices = temp;
-    }
-    @Override
-    public void draw() {
-        drawSetup();
-        // Draw the vertices
-        glLineWidth(1);
-        glPointSize(0);
-        glDrawArrays(GL_LINE_STRIP,
-                0,
-                vertices.size());
     }
 
     public void drawIndices() {
@@ -307,5 +307,22 @@ public class Sphere extends Circles {
         //Bind IBO & draw
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
         glDrawElements(GL_LINE_STRIP, index.size(), GL_UNSIGNED_INT, 0);
+    }
+
+    @Override
+    public float getCenterX() {
+        return super.getCenterX();
+    }
+
+    @Override
+    public float getCenterY() {
+        return super.getCenterY();
+    }
+
+    public float getCenterZ() {
+        return centerZ;
+    }
+    public void setCenterZ(float centerZ) {
+        this.centerZ = centerZ;
     }
 }
