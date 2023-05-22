@@ -61,6 +61,10 @@ public class MouseInput {
         return displVec;
     }
 
+    public void setScroll(Vector2f scroll){
+        this.scroll = scroll;
+    }
+
     public void input() {
         displVec.x = 0;
         displVec.y = 0;

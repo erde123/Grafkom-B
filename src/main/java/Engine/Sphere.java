@@ -4,16 +4,21 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 
 public class Sphere extends Circle {
     float centerZ;
     float radiusZ;
     List<Integer> index;
     int ibo;
+    List<Vector3f> normal;
+    int nbo;
 
     public Sphere(List<ShaderModuleData> shaderModuleDataList, List<Vector3f> vertices, Vector4f color, float centerX, float centerY, float centerZ, float radiusX, float radiusY, float radiusZ, int mode) {
         super(shaderModuleDataList, vertices, color, centerX, centerY, radiusX, radiusY, mode);
@@ -152,6 +157,52 @@ public class Sphere extends Circle {
         vertices.add(tempVertices.get(2));
         vertices.add(tempVertices.get(1));
         vertices.add(tempVertices.get(5));
+
+        normal = new ArrayList<>(
+                Arrays.asList(
+                        //belakang
+                        new Vector3f(0.0f, 0.0f, -1.0f),
+                        new Vector3f(0.0f, 0.0f, -1.0f),
+                        new Vector3f(0.0f, 0.0f, -1.0f),
+                        new Vector3f(0.0f, 0.0f, -1.0f),
+                        new Vector3f(0.0f, 0.0f, -1.0f),
+                        new Vector3f(0.0f, 0.0f, -1.0f),
+                        //depan
+                        new Vector3f(0.0f, 0.0f, 1.0f),
+                        new Vector3f(0.0f, 0.0f, 1.0f),
+                        new Vector3f(0.0f, 0.0f, 1.0f),
+                        new Vector3f(0.0f, 0.0f, 1.0f),
+                        new Vector3f(0.0f, 0.0f, 1.0f),
+                        new Vector3f(0.0f, 0.0f, 1.0f),
+                        //kiri
+                        new Vector3f(-1.0f, 0.0f, 0.0f),
+                        new Vector3f(-1.0f, 0.0f, 0.0f),
+                        new Vector3f(-1.0f, 0.0f, 0.0f),
+                        new Vector3f(-1.0f, 0.0f, 0.0f),
+                        new Vector3f(-1.0f, 0.0f, 0.0f),
+                        new Vector3f(-1.0f, 0.0f, 0.0f),
+                        //kanan
+                        new Vector3f(1.0f, 0.0f, 0.0f),
+                        new Vector3f(1.0f, 0.0f, 0.0f),
+                        new Vector3f(1.0f, 0.0f, 0.0f),
+                        new Vector3f(1.0f, 0.0f, 0.0f),
+                        new Vector3f(1.0f, 0.0f, 0.0f),
+                        new Vector3f(1.0f, 0.0f, 0.0f),
+                        //atas
+                        new Vector3f(0.0f, 1.0f, 0.0f),
+                        new Vector3f(0.0f, 1.0f, 0.0f),
+                        new Vector3f(0.0f, 1.0f, 0.0f),
+                        new Vector3f(0.0f, 1.0f, 0.0f),
+                        new Vector3f(0.0f, 1.0f, 0.0f),
+                        new Vector3f(0.0f, 1.0f, 0.0f),
+                        //bawah
+                        new Vector3f(0.0f, -1.0f, 0.0f),
+                        new Vector3f(0.0f, -1.0f, 0.0f),
+                        new Vector3f(0.0f, -1.0f, 0.0f),
+                        new Vector3f(0.0f, -1.0f, 0.0f),
+                        new Vector3f(0.0f, -1.0f, 0.0f),
+                        new Vector3f(0.0f, -1.0f, 0.0f)
+                ));
     }
 
     public void createSphere() {
@@ -217,14 +268,15 @@ public class Sphere extends Circle {
         }
         vertices = temp;
     }
+
     public void createHyperboloid_1_Side() {
         vertices.clear();
         ArrayList<Vector3f> temp = new ArrayList<>();
 
         for (double v = -Math.PI / 2; v <= Math.PI / 2; v += Math.PI / 16) {
             for (double u = -Math.PI; u <= Math.PI; u += Math.PI / 16) {
-                float x = 0.1f * (float) (1/Math.cos(v)) *  (float) Math.cos(u);
-                float z = 0.1f * (float) (1/Math.cos(v)) * (float) Math.sin(u);
+                float x = 0.1f * (float) (1 / Math.cos(v)) * (float) Math.cos(u);
+                float z = 0.1f * (float) (1 / Math.cos(v)) * (float) Math.sin(u);
                 float y = 0.1f * (float) (Math.tan(v));
                 temp.add(new Vector3f(x, y, z));
             }
@@ -237,19 +289,19 @@ public class Sphere extends Circle {
         ArrayList<Vector3f> temp = new ArrayList<>();
 
         for (double v = -Math.PI / 2; v <= Math.PI / 2; v += Math.PI / 16) {
-            for (double u = -Math.PI/2; u <= Math.PI/2; u += Math.PI / 16) {
-                float x = 0.1f * (float) (Math.tan(v)) *  (float) Math.cos(u);
+            for (double u = -Math.PI / 2; u <= Math.PI / 2; u += Math.PI / 16) {
+                float x = 0.1f * (float) (Math.tan(v)) * (float) Math.cos(u);
                 float z = 0.1f * (float) (Math.tan(v)) * (float) Math.sin(u);
-                float y = 0.1f * (float) (1/Math.cos(v));
+                float y = 0.1f * (float) (1 / Math.cos(v));
                 temp.add(new Vector3f(x, y, z));
             }
         }
 
         for (double v = -Math.PI / 2; v <= Math.PI / 2; v += Math.PI / 36) {
-            for (double u = Math.PI/2; u <= 3*Math.PI/2; u += Math.PI / 26) {
-                float x = 0.1f * (float) (Math.tan(v)) *  (float) Math.cos(u);
+            for (double u = Math.PI / 2; u <= 3 * Math.PI / 2; u += Math.PI / 26) {
+                float x = 0.1f * (float) (Math.tan(v)) * (float) Math.cos(u);
                 float z = 0.1f * (float) (Math.tan(v)) * (float) Math.sin(u);
-                float y = -0.1f * (float) (1/Math.cos(v));
+                float y = -0.1f * (float) (1 / Math.cos(v));
                 temp.add(new Vector3f(x, y, z));
             }
         }
@@ -263,7 +315,7 @@ public class Sphere extends Circle {
 
         for (double v = -Math.PI / 2; v <= Math.PI / 2; v += Math.PI / 16) {
             for (double u = -Math.PI; u <= Math.PI; u += Math.PI / 16) {
-                float x = 0.1f * (float) v *  (float) Math.cos(u);
+                float x = 0.1f * (float) v * (float) Math.cos(u);
                 float z = 0.1f * (float) v * (float) Math.sin(u);
                 float y = 0.1f * (float) v;
                 temp.add(new Vector3f(x, y, z));
@@ -278,7 +330,7 @@ public class Sphere extends Circle {
 
         for (double v = 0; v <= 3; v += Math.PI / 16) {
             for (double u = -Math.PI; u <= Math.PI; u += Math.PI / 16) {
-                float x = 0.5f * (float) v *  (float) Math.cos(u);
+                float x = 0.5f * (float) v * (float) Math.cos(u);
                 float z = 0.5f * (float) v * (float) Math.sin(u);
                 float y = (float) Math.pow(v, 2);
                 temp.add(new Vector3f(x, y, z));
@@ -293,8 +345,8 @@ public class Sphere extends Circle {
 
         for (double v = 0; v <= 3; v += Math.PI / 16) {
             for (double u = -Math.PI; u <= Math.PI; u += Math.PI / 16) {
-                float x = 0.1f * (float) v *  (float) Math.tan(u);
-                float z = 0.1f * (float) v * (float) (1/Math.cos(u));
+                float x = 0.1f * (float) v * (float) Math.tan(u);
+                float z = 0.1f * (float) v * (float) (1 / Math.cos(u));
                 float y = (float) Math.pow(v, 2);
                 temp.add(new Vector3f(x, y, z));
             }
@@ -307,6 +359,31 @@ public class Sphere extends Circle {
         //Bind IBO & draw
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
         glDrawElements(GL_LINE_STRIP, index.size(), GL_UNSIGNED_INT, 0);
+    }
+
+    public void setupVAOVBO() {
+        super.setupVAOVBO();
+
+        //nbo
+        nbo = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, nbo);
+        glBufferData(GL_ARRAY_BUFFER, Utils.listoFloat(normal), GL_STATIC_DRAW);
+        uniformsMap.createUniform("LightColor");
+        uniformsMap.createUniform("lightPos");
+
+    }
+
+    public void drawSetup(Camera camera, Projection projection) {
+        super.drawSetup(camera, projection);
+
+        // Bind NBO
+        glEnableVertexAttribArray(1);
+        glBindBuffer(GL_ARRAY_BUFFER, nbo);
+        glVertexAttribPointer(1, 3, GL_FLOAT, false, 0, 0);
+        uniformsMap.setUniform("LightColor",
+                new Vector3f(1.0f,1.0f,0.0f));
+        uniformsMap.setUniform("lightPos",
+                new Vector3f(1.0f,1.0f,0.0f));
     }
 
     @Override
@@ -322,6 +399,7 @@ public class Sphere extends Circle {
     public float getCenterZ() {
         return centerZ;
     }
+
     public void setCenterZ(float centerZ) {
         this.centerZ = centerZ;
     }

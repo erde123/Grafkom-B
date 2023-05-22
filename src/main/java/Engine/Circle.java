@@ -28,7 +28,7 @@ public class Circle extends Object2d {
             createSegitiga();
         }
 
-        setupVAOVBO();
+//        setupVAOVBO();
     }
 
     public Circle(List<ShaderModuleData> shaderModuleDataList, List<Vector3f> vertices, Vector4f color, float centerX, float centerY, float radiusX, float radiusY) {
@@ -38,7 +38,7 @@ public class Circle extends Object2d {
         this.radiusX = radiusX;
         this.radiusY = radiusY;
         createCircle();
-        setupVAOVBO();
+//        setupVAOVBO();
     }
 
     public void createCircle() {

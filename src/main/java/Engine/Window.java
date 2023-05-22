@@ -2,6 +2,7 @@ package Engine;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
@@ -113,6 +114,9 @@ public class Window {
         if(glfwWindowShouldClose(window))
             open = false;
         mouseInput.input();
+
+        GL.createCapabilities();
+        glEnable(GL_DEPTH_TEST);
     }
 
     public void cleanup(){

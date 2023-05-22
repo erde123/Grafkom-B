@@ -28,12 +28,15 @@ public class Main {
 
     boolean overlap;
     boolean isTouched;
+    boolean muter = false;
+    float waktuMuter;
     Camera camera = new Camera();
     Projection projection = new Projection(window.getWidth(), window.getHeight());
 
     public void init() {
         window.init();
         GL.createCapabilities();
+        glEnable(GL_DEPTH_TEST);
         camera.setPosition(0, 0, 0.5f);
         camera.setRotation((float) Math.toRadians(0.0f), (float) Math.toRadians(30.0f));
 
@@ -428,6 +431,7 @@ public class Main {
                 0.0f, 0.0f, 0.0f, 0.5f, 0.5f, 0.5f
         ));
         objectsSphere.get(0).scaleObject(0.45f, 0.45f, 0.45f);
+        objectsSphere.get(0).translateObject(0.04f,0.0f,0.0f);
 
         objectsSphere.get(0).getChildObject().add(new Sphere(
                 Arrays.asList(
@@ -480,6 +484,22 @@ public class Main {
         objectsSphere.get(0).getChildObject().get(1).getChildObject().get(0).scaleObject(0.5f, 0.5f, 0.5f);
         objectsSphere.get(0).getChildObject().get(1).getChildObject().get(0).translateObject(0.5f, -0.2f, 0.0f);
 
+        objectsSphere.add(new Sphere(
+                Arrays.asList(
+                        //shaderFile lokasi menyesuaikan objectnya
+                        new ShaderProgram.ShaderModuleData
+                                ("resources/shaders/scene.vert"
+                                        , GL_VERTEX_SHADER),
+                        new ShaderProgram.ShaderModuleData
+                                ("resources/shaders/scene.frag"
+                                        , GL_FRAGMENT_SHADER)
+                ),
+                new ArrayList<>(),
+                new Vector4f(1.0f, 1.0f, 1.0f, 0.0f),
+                0.0f, 0.0f, 0.0f, 0.5f, 0.5f, 0.5f
+        ));
+        objectsSphere.get(1).translateObject(-0.02f,0.0f,0.0f);
+        objectsSphere.get(1).scaleObject(0.05f,0.05f,0.05f);
 //        // merkurius
 //        objectsSphere.add(new Sphere(
 //                Arrays.asList(
@@ -573,25 +593,88 @@ public class Main {
     }
 
     public void input() {
-        if (window.isKeyPressed(GLFW_KEY_W)) {
+        // camera
+        if (window.isKeyPressed(GLFW_KEY_KP_0)){
+            camera.moveBackwards(0.01f);
+        }
+        if (window.isKeyPressed(GLFW_KEY_KP_1)){
+            camera.moveForward(0.01f);
+        }
+        if (window.isKeyPressed(GLFW_KEY_D)){
+//            camera.moveLeft(0.01f);
+            objectsSphere.get(1).translateObject(-0.01f,0.0f,0.0f);
+            camera.setPosition(camera.getPosition().x-0.01f,camera.getPosition().y,camera.getPosition().z);
+        }
+        if (window.isKeyPressed(GLFW_KEY_A)){
+            objectsSphere.get(1).translateObject(0.01f,0.0f,0.0f);
+            camera.setPosition(camera.getPosition().x+0.01f,camera.getPosition().y,camera.getPosition().z);
+//            camera.moveRight(0.01f);
+        }
+        if (window.isKeyPressed(GLFW_KEY_S)){
+            objectsSphere.get(1).translateObject(0.0f,0.0f,0.01f);
+            camera.setPosition(camera.getPosition().x,camera.getPosition().y,camera.getPosition().z+0.01f);
+//            camera.moveBackwards(0.01f);
+        }
+        if (window.isKeyPressed(GLFW_KEY_W)){
+//            camera.moveDown(0.01f);
+            objectsSphere.get(1).translateObject(0.0f,0.0f,-0.01f);
+            camera.setPosition(camera.getPosition().x,camera.getPosition().y,camera.getPosition().z-0.01f);
+//            camera.moveForward(0.01f);
+        }
+        if (window.isKeyPressed(GLFW_KEY_KP_8)) {
+            camera.addRotation((float) Math.toRadians(0.1f),0.0f);
+        }
+        if (window.isKeyPressed(GLFW_KEY_KP_5)){
+            camera.addRotation((float) Math.toRadians(-0.1f),0.0f);
+        }
+        if (window.isKeyPressed(GLFW_KEY_KP_4)){
+            muter = true;
+            camera.addRotation(0.0f, (float) Math.toRadians(0.5f));
+        }
+
+        if (muter){
+            waktuMuter += 0.01f;
+        }
+
+        if (waktuMuter >= 7.0f){
+            muter = false;
+            waktuMuter = 0.0f;
+        }
+        if (window.isKeyPressed(GLFW_KEY_KP_6)){
+            camera.addRotation(0.0f,(float) Math.toRadians(-0.1f));
+        }
+        if(window.isKeyPressed(GLFW_KEY_LEFT_CONTROL)){
+            Vector3f target = objectsSphere.get(1).updateCenterPoint();
+            camera.addRotation(0f, (float) Math.toRadians(-0.5f));
+            Vector3f sub = new Vector3f(camera.getPosition().x - target.x, camera.getPosition().y - target.y,
+                    camera.getPosition().z - target.z);
+
+
+            float xnow = (float) ((sub.x * Math.cos(Math.toRadians(0.5f))) + (sub.z * Math.sin(Math.toRadians(0.5f))));
+            float ynow = sub.y;
+            float znow = (float) (( -sub.x * Math.sin(Math.toRadians(0.5f))) + (sub.z * Math.cos(Math.toRadians(0.5f))));
+            camera.setPosition(xnow + target.x, ynow + target.y, znow + target.z);
+        }
+//        if (window.isKeyPressed(GLFW_KEY_W)) {
 //            System.out.println("W");
 //            objectsSphere.get(0).rotateObject((float) Math.toRadians(0.5f), 1.0f, 0.0f, 0.0f);
-            objectsSphere.get(0).rotateObject((float) Math.toRadians(0.5f), 0.0f, 0.0f, 1.0f);
+//            objectsSphere.get(0).rotateObject((float) Math.toRadians(0.5f), 0.0f, 0.0f, 1.0f);
+//
+//            for (Object2d child : objectsSphere.get(0).getChildObject()) {
+//                Vector3f tempCenterPoint = child.updateCenterPoint();
+//                child.translateObject(tempCenterPoint.x * -1, tempCenterPoint.y * -1, tempCenterPoint.z * -1);
+//                child.rotateObject((float) Math.toRadians(0.5f), 0.0f, 0.0f, 1.0f);
+//                child.translateObject(tempCenterPoint.x * 1, tempCenterPoint.y * 1, tempCenterPoint.z * 1);
+//            }
+//
+//            for (Object2d child : objectsSphere.get(0).getChildObject().get(1).getChildObject()) {
+//                Vector3f tempCenterPoint = objectsSphere.get(0).getChildObject().get(1).updateCenterPoint();
+//                child.translateObject(tempCenterPoint.x * -1, tempCenterPoint.y * -1, tempCenterPoint.z * -1);
+//                child.rotateObject(0.05f, 0.0f, 0.0f, 1.0f);
+//                child.translateObject(tempCenterPoint.x * 1, tempCenterPoint.y * 1, tempCenterPoint.z * 1);
+//            }
 
-            for (Object2d child : objectsSphere.get(0).getChildObject()) {
-                Vector3f tempCenterPoint = child.updateCenterPoint();
-                child.translateObject(tempCenterPoint.x * -1, tempCenterPoint.y * -1, tempCenterPoint.z * -1);
-                child.rotateObject((float) Math.toRadians(0.5f), 0.0f, 0.0f, 1.0f);
-                child.translateObject(tempCenterPoint.x * 1, tempCenterPoint.y * 1, tempCenterPoint.z * 1);
-            }
-
-            for (Object2d child : objectsSphere.get(0).getChildObject().get(1).getChildObject()) {
-                Vector3f tempCenterPoint = objectsSphere.get(0).getChildObject().get(1).updateCenterPoint();
-                child.translateObject(tempCenterPoint.x * -1, tempCenterPoint.y * -1, tempCenterPoint.z * -1);
-                child.rotateObject(0.05f, 0.0f, 0.0f, 1.0f);
-                child.translateObject(tempCenterPoint.x * 1, tempCenterPoint.y * 1, tempCenterPoint.z * 1);
-            }
-        }
+//        }
 
         if (window.isKeyPressed(GLFW_KEY_F)) {
             for (int i = 1; i < objectsSphere.size(); i++) {
@@ -626,50 +709,57 @@ public class Main {
         }
 
         if (window.getMouseInput().isLeftButtonPressed()) {
-            Vector2f pos = window.getMouseInput().getCurrentPos();
-//            System.out.println("x : "+pos.x+" y : "+pos.y);
-            pos.x = (pos.x - (window.getWidth()) / 2.0f) / (window.getWidth() / 2.0f);
-            pos.y = (pos.y - (window.getHeight()) / 2.0f) / (-window.getHeight() / 2.0f);
-//            System.out.println("x : "+pos.x+" y : "+pos.y);
-            if ((!(pos.x > 1 || pos.x < -0.97) && !(pos.y > 0.97 || pos.y < -1))) {
-                System.out.println("x : " + pos.x + " y : " + pos.y);
-                overlap = false;
-                int index = 0;
+            Vector2f displayVector = window.getMouseInput().getDisplVec();
+            camera.addRotation((float) Math.toRadians(displayVector.x * 0.1f), (float) Math.toRadians(displayVector.y * 0.1f));
 
-                for (Circle object : objectsRectangle2) {
-                    overlap = object.isOverlap(pos.x, pos.y);
-                    if (overlap) {
-                        break;
-                    }
-                }
-
-                for (Circle object : objectsRectangle2) {
-                    isTouched = object.isTouched(pos.x, pos.y);
-                    if (isTouched) {
-                        objectsPointsControl.get(0).update(index, new Vector3f(pos.x, pos.y, 0));
-                        object.moveKotak(pos.x, pos.y, 0.05f);
-                    }
-                    index++;
-                }
-
-                if (!overlap) {
-                    objectsPointsControl.get(0).addVertices(new Vector3f(pos.x, pos.y, 0));
-                    objectsRectangle2.add(new Circle(
-                            Arrays.asList(
-                                    //shaderFile lokasi menyesuaikan objectnya
-                                    new ShaderProgram.ShaderModuleData
-                                            ("resources/shaders/scene.vert"
-                                                    , GL_VERTEX_SHADER),
-                                    new ShaderProgram.ShaderModuleData
-                                            ("resources/shaders/scene.frag"
-                                                    , GL_FRAGMENT_SHADER)
-                            ),
-                            new ArrayList<>(),
-                            new Vector4f(1.0f, 1.0f, 1.0f, 1.0f),
-                            pos.x, pos.y, 0.05f, 0.05f, 2
-                    ));
-                }
-            }
+//            Vector2f pos = window.getMouseInput().getCurrentPos();
+////            System.out.println("x : "+pos.x+" y : "+pos.y);
+//            pos.x = (pos.x - (window.getWidth()) / 2.0f) / (window.getWidth() / 2.0f);
+//            pos.y = (pos.y - (window.getHeight()) / 2.0f) / (-window.getHeight() / 2.0f);
+////            System.out.println("x : "+pos.x+" y : "+pos.y);
+//            if ((!(pos.x > 1 || pos.x < -0.97) && !(pos.y > 0.97 || pos.y < -1))) {
+//                System.out.println("x : " + pos.x + " y : " + pos.y);
+//                overlap = false;
+//                int index = 0;
+//
+//                for (Circle object : objectsRectangle2) {
+//                    overlap = object.isOverlap(pos.x, pos.y);
+//                    if (overlap) {
+//                        break;
+//                    }
+//                }
+//
+//                for (Circle object : objectsRectangle2) {
+//                    isTouched = object.isTouched(pos.x, pos.y);
+//                    if (isTouched) {
+//                        objectsPointsControl.get(0).update(index, new Vector3f(pos.x, pos.y, 0));
+//                        object.moveKotak(pos.x, pos.y, 0.05f);
+//                    }
+//                    index++;
+//                }
+//
+//                if (!overlap) {
+//                    objectsPointsControl.get(0).addVertices(new Vector3f(pos.x, pos.y, 0));
+//                    objectsRectangle2.add(new Circle(
+//                            Arrays.asList(
+//                                    //shaderFile lokasi menyesuaikan objectnya
+//                                    new ShaderProgram.ShaderModuleData
+//                                            ("resources/shaders/scene.vert"
+//                                                    , GL_VERTEX_SHADER),
+//                                    new ShaderProgram.ShaderModuleData
+//                                            ("resources/shaders/scene.frag"
+//                                                    , GL_FRAGMENT_SHADER)
+//                            ),
+//                            new ArrayList<>(),
+//                            new Vector4f(1.0f, 1.0f, 1.0f, 1.0f),
+//                            pos.x, pos.y, 0.05f, 0.05f, 2
+//                    ));
+//                }
+//            }
+        }
+        if(window.getMouseInput().getScroll().y != 0){
+            projection.setFOV(projection.getFOV() - (window.getMouseInput().getScroll().y * 0.01f));
+            window.getMouseInput().setScroll(new Vector2f());
         }
     }
 
@@ -712,6 +802,10 @@ public class Main {
 
             for (Sphere object : objectsSphere) {
                 object.draw(camera, projection);
+            }
+
+            if(muter){
+                camera.addRotation(0.0f, (float) Math.toRadians(0.5f));
             }
 
             // Restore state

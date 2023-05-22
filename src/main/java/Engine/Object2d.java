@@ -35,7 +35,7 @@ public class Object2d extends ShaderProgram {
         super(shaderModuleDataList);
         this.vertices = vertices;
         this.color = color;
-        setupVAOVBO();
+//        setupVAOVBO();
 
         uniformsMap = new UniformsMap(getProgramId());
         uniformsMap.createUniform("uni_color");
@@ -168,6 +168,7 @@ public class Object2d extends ShaderProgram {
 
     public void translateObject(Float offsetX, Float offsetY, Float offsetZ) {
         model = new Matrix4f().translate(offsetX, offsetY, offsetZ).mul(new Matrix4f(model));
+        updateCenterPoint();
         for (Object2d child : childObject) {
             child.translateObject(offsetX, offsetY, offsetZ);
         }
