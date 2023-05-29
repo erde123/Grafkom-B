@@ -16,6 +16,8 @@ import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class Object2d extends ShaderProgram {
     List<Vector3f> vertices;
+    List<Vector3f> normal;
+    List<Integer> indicies;
     int vao;
     int vbo;
     Vector4f color;
@@ -24,6 +26,40 @@ public class Object2d extends ShaderProgram {
     int vboColor;
     Matrix4f model;
     List <Object2d> childObject;
+    List<Float> centerPoint;
+    public List<Vector3f> getVertices() {
+        return vertices;
+    }
+    public void setVertices(List<Vector3f> vertices) {
+        this.vertices = vertices;
+        setupVAOVBO();
+    }
+    public List<Vector3f> getNormal() {
+        return normal;
+    }
+
+    public void setNormal(List<Vector3f> normals) {
+        this.normal = normals;
+        setupVAOVBO();
+    }
+
+    public List<Integer> getIndicies() {
+        return indicies;
+    }
+
+    public void setIndicies(List<Integer> indicies) {
+        this.indicies = indicies;
+        setupVAOVBO();
+    }
+
+    public List<Float> getCenterPoint() {
+        updateCenterPoint();
+        return centerPoint;
+    }
+
+    public void setCenterPoint(List<Float> centerPoint) {
+        this.centerPoint = centerPoint;
+    }
 
     public Vector3f updateCenterPoint() {
         Vector3f centerTemp = new Vector3f();
