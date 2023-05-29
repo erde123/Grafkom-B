@@ -15,9 +15,10 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 
 public class Object2d extends ShaderProgram {
-    List<Vector3f> vertices;
-    List<Vector3f> normal;
-    List<Integer> indicies;
+    List<Vector3f> vertices = new ArrayList<>();
+    List<Vector3f> normal = new ArrayList<>();
+    List<Integer> indicies = new ArrayList<>();
+    int nbo;
     int vao;
     int vbo;
     Vector4f color;
@@ -25,32 +26,8 @@ public class Object2d extends ShaderProgram {
     List<Vector3f> verticesColor;
     int vboColor;
     Matrix4f model;
-    List <Object2d> childObject;
+    List<Object2d> childObject;
     List<Float> centerPoint;
-    public List<Vector3f> getVertices() {
-        return vertices;
-    }
-    public void setVertices(List<Vector3f> vertices) {
-        this.vertices = vertices;
-        setupVAOVBO();
-    }
-    public List<Vector3f> getNormal() {
-        return normal;
-    }
-
-    public void setNormal(List<Vector3f> normals) {
-        this.normal = normals;
-        setupVAOVBO();
-    }
-
-    public List<Integer> getIndicies() {
-        return indicies;
-    }
-
-    public void setIndicies(List<Integer> indicies) {
-        this.indicies = indicies;
-        setupVAOVBO();
-    }
 
     public List<Float> getCenterPoint() {
         updateCenterPoint();
@@ -97,7 +74,18 @@ public class Object2d extends ShaderProgram {
         //set vbo
         vbo = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, Utils.listoFloat(vertices), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER,
+                Utils.listoFloat(vertices),
+                GL_STATIC_DRAW);
+
+        uniformsMap.createUniform("LightColor");
+        uniformsMap.createUniform("lightPos");
+
+        //set nbo
+        nbo = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, nbo);
+        glBufferData(GL_ARRAY_BUFFER, Utils.listoFloat(normal),
+                GL_STATIC_DRAW);
     }
 
     public void setupVAOVBOWithVerticesColor() {
@@ -126,18 +114,23 @@ public class Object2d extends ShaderProgram {
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
     }
-
     public void drawSetup(Camera camera, Projection projection) {
         bind();
-        uniformsMap.setUniform("uni_color", color);
-        uniformsMap.setUniform("model", model);
-        uniformsMap.setUniform("view", camera.getViewMatrix());
-        uniformsMap.setUniform("projection", projection.getProjMatrix());
-
+        uniformsMap.setUniform(
+                "uni_color", color);
+        uniformsMap.setUniform(
+                "model", model);
+        uniformsMap.setUniform(
+                "view", camera.getViewMatrix());
+        uniformsMap.setUniform(
+                "projection", projection.getProjMatrix());
         // Bind VBO
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+        glVertexAttribPointer(0, 3,
+                GL_FLOAT,
+                false,
+                0, 0);
     }
 
     public void drawSetupWithVerticesColor() {
@@ -160,7 +153,7 @@ public class Object2d extends ShaderProgram {
         glLineWidth(1);
         glPointSize(0);
         glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-        for(Object2d child : childObject) {
+        for (Object2d child : childObject) {
             child.draw();
         }
     }
@@ -171,7 +164,7 @@ public class Object2d extends ShaderProgram {
         glLineWidth(1);
         glPointSize(0);
         glDrawArrays(GL_TRIANGLES, 0, vertices.size());
-        for(Object2d child : childObject) {
+        for (Object2d child : childObject) {
             child.draw(camera, projection);
         }
     }
@@ -230,5 +223,32 @@ public class Object2d extends ShaderProgram {
 
     public void setChildObject(List<Object2d> childObject) {
         this.childObject = childObject;
+    }
+
+    public List<Vector3f> getVertices() {
+        return vertices;
+    }
+
+    public void setVertices(List<Vector3f> vertices) {
+        this.vertices = vertices;
+        setupVAOVBO();
+    }
+
+    public List<Vector3f> getNormal() {
+        return normal;
+    }
+
+    public void setNormal(List<Vector3f> normal) {
+        this.normal = normal;
+        setupVAOVBO();
+    }
+
+    public List<Integer> getIndicies() {
+        return indicies;
+    }
+
+    public void setIndicies(List<Integer> indicies) {
+        this.indicies = indicies;
+        setupVAOVBO();
     }
 }

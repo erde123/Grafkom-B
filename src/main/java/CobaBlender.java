@@ -37,8 +37,9 @@ public class CobaBlender {
     public void init() {
         window.init();
         GL.createCapabilities();
+        glEnable(GL_DEPTH_TEST);
         mouseInput = window.getMouseInput();
-        camera.setPosition(0, 1f, 1.7f);
+        camera.setPosition(0, 0f, 0f);
         camera.moveDown(0.6f);
 
         objects.add(new Sphere(
@@ -56,16 +57,15 @@ public class CobaBlender {
                 0.0f, 0.0f, 0.0f, 0.5f, 0.5f, 0.5f
         ));
 
-        ObjectLoader objectLoader = new ObjectLoader("resources/Mario/Mario.fbx", "fbx");
+        ObjectLoader objectLoader = new ObjectLoader("resources/Charizard/Charizard.fbx", "fbx");
         objects.get(0).setVertices(objectLoader.vertices);
         objects.get(0).setNormal(objectLoader.normals);
         objects.get(0).setIndicies(objectLoader.indicies);
-
-        objects.get(0).rotateObject(-90f,1f, 0f, 0f);
+        objects.get(0).rotateObject(0f,0f, -1.0f, 1.0f);
     }
 
     public void input() {
-        float move = 0.01f;
+        float move = 0.1f;
         if (window.isKeyPressed(GLFW_KEY_W)) {
             camera.moveForward(move);
 

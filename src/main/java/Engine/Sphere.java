@@ -18,7 +18,6 @@ public class Sphere extends Circle {
     List<Integer> index;
     int ibo;
     List<Vector3f> normal;
-    int nbo;
 
     public Sphere(List<ShaderModuleData> shaderModuleDataList, List<Vector3f> vertices, Vector4f color, float centerX, float centerY, float centerZ, float radiusX, float radiusY, float radiusZ, int mode) {
         super(shaderModuleDataList, vertices, color, centerX, centerY, radiusX, radiusY, mode);
@@ -359,18 +358,6 @@ public class Sphere extends Circle {
         //Bind IBO & draw
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
         glDrawElements(GL_LINE_STRIP, index.size(), GL_UNSIGNED_INT, 0);
-    }
-
-    public void setupVAOVBO() {
-        super.setupVAOVBO();
-
-        //nbo
-        nbo = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, nbo);
-        glBufferData(GL_ARRAY_BUFFER, Utils.listoFloat(normal), GL_STATIC_DRAW);
-        uniformsMap.createUniform("LightColor");
-        uniformsMap.createUniform("lightPos");
-
     }
 
     public void drawSetup(Camera camera, Projection projection) {
